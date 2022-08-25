@@ -1,5 +1,7 @@
-language: "English(US)"
+language: "English (US)"
+language-file-version: 1
 language-file-contributor: "MCUmbrella"
+
 usage: "Usage: \n  /logback : teleport to logback location\n  /logback setspawn : set the spawn location"
 err-permission-denied: "You don't have permission to do that"
 err-player-only: "This command is only available to players"

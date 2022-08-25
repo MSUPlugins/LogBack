@@ -1,5 +1,7 @@
 language: "中文（中国）"
+language-file-version: 1
 language-file-contributor: "MCUmbrella"
+
 usage: "用法：\n  /logback : 传送到下线位置\n  /logback setspawn : 设置登录点为当前位置"
 err-permission-denied: "没有权限"
 err-player-only: "仅限玩家使用"
