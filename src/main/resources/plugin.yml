@@ -1,0 +1,18 @@
+name: LogBack
+version: '${project.version}'
+main: vip.floatationdevice.msu.logback.LogBack
+api-version: 1.13
+authors: [ MCUmbrella ]
+website: https://github.com/MSUPugins/LogBack
+commands:
+  logback:
+    description: "Teleport to logout location"
+    aliases:
+      - lback
+permissions:
+  logback.logback:
+    description: "Allows the player to teleport to logout location"
+    default: true
+  logback.setspawn:
+    description: "Allows the player to set the login location"
+    default: op

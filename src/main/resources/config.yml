@@ -1,0 +1,11 @@
+# DO NOT CHANGE MANUALLY!
+version: 1
+
+# Available: "en_US", "zh_CN"
+language: "en_US"
+
+# Notify players to use "/logback" after joining
+notify: true
+
+# Use the Minecraft spawn point instead of the spawn point set by "/logback setspawn"
+useMinecraftSpawnPoint: false
