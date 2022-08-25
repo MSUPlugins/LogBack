@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import static vip.floatationdevice.msu.logback.I18nUtil.*;
+import static vip.floatationdevice.msu.I18nUtil.*;
 
 public class LBCommandExecutor implements Listener, CommandExecutor
 {
