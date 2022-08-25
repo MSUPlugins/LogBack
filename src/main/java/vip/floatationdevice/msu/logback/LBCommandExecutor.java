@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import static vip.floatationdevice.msu.I18nUtil.*;
+import static vip.floatationdevice.msu.I18nUtil.translate;
 
 public class LBCommandExecutor implements Listener, CommandExecutor
 {
@@ -27,11 +27,11 @@ public class LBCommandExecutor implements Listener, CommandExecutor
                 {
                     try
                     {
-                        if(DataManager.isRecorded(((Player)sender).getUniqueId()))
+                        if(DataManager.isRecorded(((Player) sender).getUniqueId()))
                         {
-                            ((Player)sender).teleport(DataManager.readLocation(((Player)sender).getUniqueId()), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                            ((Player) sender).teleport(DataManager.readLocation(((Player) sender).getUniqueId()), PlayerTeleportEvent.TeleportCause.PLUGIN);
                             sender.sendMessage(translate("logback-success"));
-                            DataManager.removeLocation(((Player)sender).getUniqueId());
+                            DataManager.removeLocation(((Player) sender).getUniqueId());
                             return true;
                         }
                         else
@@ -44,8 +44,8 @@ public class LBCommandExecutor implements Listener, CommandExecutor
                     {
                         sender.sendMessage(translate("err-logback-fail"));
                         LogBack.log.severe(translate("err-logback-fail-console")
-                                .replace("{0}",sender.getName())
-                                .replace("{1}",e.toString()));
+                                .replace("{0}", sender.getName())
+                                .replace("{1}", e.toString()));
                         return false;
                     }
                 }
@@ -63,11 +63,11 @@ public class LBCommandExecutor implements Listener, CommandExecutor
                     {
                         try
                         {
-                            DataManager.writeLocation((Player)sender,((Player)sender).getLocation(),true);
+                            DataManager.writeLocation((Player) sender, ((Player) sender).getLocation(), true);
                             sender.sendMessage(translate("setspawn-success"));
                             return true;
                         }
-                        catch (Exception e)
+                        catch(Exception e)
                         {
                             sender.sendMessage(translate("err-setspawn-fail"));
                             e.printStackTrace();

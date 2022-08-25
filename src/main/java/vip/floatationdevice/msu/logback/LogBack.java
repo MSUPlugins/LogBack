@@ -13,7 +13,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
 
-import static vip.floatationdevice.msu.I18nUtil.*;
+import static vip.floatationdevice.msu.I18nUtil.setLanguage;
+import static vip.floatationdevice.msu.I18nUtil.translate;
 
 public final class LogBack extends JavaPlugin implements Listener
 {
@@ -23,10 +24,10 @@ public final class LogBack extends JavaPlugin implements Listener
     @Override
     public void onEnable()
     {
-        log=getLogger();
+        log = getLogger();
         log.info("Initializing");
-        instance=this;
-        getServer().getPluginManager().registerEvents(this,this);
+        instance = this;
+        getServer().getPluginManager().registerEvents(this, this);
         try
         {
             ConfigManager.initialize();
@@ -35,7 +36,7 @@ public final class LogBack extends JavaPlugin implements Listener
             getCommand("logback").setExecutor(new LBCommandExecutor());
             log.info("Initialization complete");
         }
-        catch (Exception e)
+        catch(Exception e)
         {
             log.severe("Initialization failed");
             e.printStackTrace();
@@ -50,26 +51,26 @@ public final class LogBack extends JavaPlugin implements Listener
     {
         // save all players' location
         log.info("Saving all players' location");
-        int count=0;
-        for(Player p:getServer().getOnlinePlayers())
+        int count = 0;
+        for(Player p : getServer().getOnlinePlayers())
         {
-            Location loc=p.getLocation();
+            Location loc = p.getLocation();
             try
             {
-                DataManager.writeLocation(p,loc,false);
+                DataManager.writeLocation(p, loc, false);
                 count++;
             }
             catch(Exception e)
             {
                 log.severe(translate("err-write-location-fail")
-                        .replace("{0}",p.getName())
-                        .replace("{1}",e.toString()));
+                        .replace("{0}", p.getName())
+                        .replace("{1}", e.toString()));
             }
         }
-        log.info("Saving complete, "+count+" players' location saved");
+        log.info("Saving complete, " + count + " players' location saved");
     }
 
-    @EventHandler(priority=EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerLeave(PlayerQuitEvent e)
     {
         if(!ConfigManager.useMinecraftSpawnPoint() && !DataManager.isSpawnSet())
@@ -77,37 +78,39 @@ public final class LogBack extends JavaPlugin implements Listener
             log.warning(translate("warn-spawn-not-set"));
             return;
         }
-        Player p=e.getPlayer();
-        Location loc=p.getLocation();
+        Player p = e.getPlayer();
+        Location loc = p.getLocation();
         Location spawn;
         try
         {
-            spawn=DataManager.readSpawnLocation();
+            spawn = DataManager.readSpawnLocation();
         }
-        catch (Exception ex)
+        catch(Exception ex)
         {
-            spawn=getServer().getWorlds().get(0).getSpawnLocation();
-            log.severe(translate("err-read-spawn-fail").replace("{0}",ex.toString()));
+            spawn = getServer().getWorlds().get(0).getSpawnLocation();
+            log.severe(translate("err-read-spawn-fail").replace("{0}", ex.toString()));
         }
-        Bukkit.getScheduler().runTaskAsynchronously(this,new Runnable(){
-            @Override public void run()
+        Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable()
+        {
+            @Override
+            public void run()
             {
                 try
                 {
-                    DataManager.writeLocation(p,loc,false);
+                    DataManager.writeLocation(p, loc, false);
                 }
                 catch(Exception ex)
                 {
                     log.severe(translate("err-write-location-fail")
-                            .replace("{0}",p.getName())
-                            .replace("{1}",ex.toString()));
+                            .replace("{0}", p.getName())
+                            .replace("{1}", ex.toString()));
                 }
             }
         });
         p.teleport(spawn, PlayerTeleportEvent.TeleportCause.PLUGIN);
     }
 
-    @EventHandler(priority=EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent e)
     {
         if(!ConfigManager.useMinecraftSpawnPoint() && !DataManager.isSpawnSet())
@@ -115,18 +118,18 @@ public final class LogBack extends JavaPlugin implements Listener
             log.warning(translate("warn-spawn-not-set"));
             return;
         }
-        Player p=e.getPlayer();
+        Player p = e.getPlayer();
         Location spawn;
         try
         {
-            spawn=DataManager.readSpawnLocation();
+            spawn = DataManager.readSpawnLocation();
         }
-        catch (Exception ex)
+        catch(Exception ex)
         {
-            spawn=getServer().getWorlds().get(0).getSpawnLocation();
+            spawn = getServer().getWorlds().get(0).getSpawnLocation();
             log.severe(translate("err-read-spawn-fail"));
         }
-        if(!DataManager.isRecorded(p.getUniqueId())) log.info(p.getName()+" doesn't have a logout location");
+        if(!DataManager.isRecorded(p.getUniqueId())) log.info(p.getName() + " doesn't have a logout location");
         p.teleport(spawn, PlayerTeleportEvent.TeleportCause.PLUGIN);
         if(ConfigManager.nofityEnabled()) p.sendMessage(translate("notify"));
     }
