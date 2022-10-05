@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import static vip.floatationdevice.msu.I18nUtil.setLanguage;
@@ -20,6 +21,7 @@ public final class LogBack extends JavaPlugin implements Listener
 {
     public static LogBack instance;
     public static Logger log;
+    static Vector<RecordExpirationTimer> expirationTimers = new Vector<RecordExpirationTimer>();
 
     @Override
     public void onEnable()
@@ -49,6 +51,8 @@ public final class LogBack extends JavaPlugin implements Listener
     @Override
     public void onDisable()
     {
+        // cancel all expiration timers
+        for(RecordExpirationTimer t : expirationTimers) t.interrupt();
         // save all players' location
         log.info("Saving all players' location");
         int count = 0;
@@ -127,10 +131,16 @@ public final class LogBack extends JavaPlugin implements Listener
         catch(Exception ex)
         {
             spawn = getServer().getWorlds().get(0).getSpawnLocation();
-            log.severe(translate("err-read-spawn-fail"));
+            log.severe(translate("err-read-spawn-fail").replace("{0}", e.toString()));
         }
-        if(!DataManager.isRecorded(p.getUniqueId())) log.info(p.getName() + " doesn't have a logout location");
+        //if(!DataManager.isRecorded(p.getUniqueId())) log.info(p.getName() + " doesn't have a logout location");
         p.teleport(spawn, PlayerTeleportEvent.TeleportCause.PLUGIN);
         if(ConfigManager.nofityEnabled()) p.sendMessage(translate("notify"));
+        if(ConfigManager.getRecordExpirationSeconds() > 0 && DataManager.isRecorded(p.getUniqueId()))
+        {
+            RecordExpirationTimer t = new RecordExpirationTimer(p.getUniqueId());
+            expirationTimers.add(t);
+            t.start();
+        }
     }
 }

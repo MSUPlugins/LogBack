@@ -1,4 +1,4 @@
-# DO NOT CHANGE MANUALLY!
+# Only change it if you know how to manually upgrade the configuration file
 version: 1
 
 # Available: "en_US", "zh_CN"
@@ -9,3 +9,7 @@ notify: true
 
 # Use the Minecraft spawn point instead of the spawn point set by "/logback setspawn"
 useMinecraftSpawnPoint: false
+
+# After how many seconds will the logout location record expire after logging in?
+# Set to 0 or lower to disable logout location expiration
+recordExpirationSeconds: 45

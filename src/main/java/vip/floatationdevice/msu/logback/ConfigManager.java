@@ -8,9 +8,9 @@ import java.io.File;
 public class ConfigManager
 {
     private static final int CONFIG_VERSION = 1;
-    protected static YamlConfiguration cfg;
+    static YamlConfiguration cfg;
 
-    protected static void initialize() throws Exception
+    static void initialize() throws Exception
     {
         LogBack.log.info("Loading configurations");
         File cfgFile = new File(LogBack.instance.getDataFolder(), "config.yml");
@@ -21,11 +21,13 @@ public class ConfigManager
         LogBack.log.info("Configurations loaded");
     }
 
-    protected static int getConfigVersion(){return cfg.getInt("version");}
+    static int getConfigVersion(){return cfg.getInt("version");}
 
-    protected static String getLanguage(){return cfg.getString("language");}
+    static String getLanguage(){return cfg.getString("language");}
 
-    protected static boolean nofityEnabled(){return cfg.getBoolean("notify");}
+    static boolean nofityEnabled(){return cfg.getBoolean("notify");}
 
-    protected static boolean useMinecraftSpawnPoint(){return cfg.getBoolean("useMinecraftSpawnPoint");}
+    static boolean useMinecraftSpawnPoint(){return cfg.getBoolean("useMinecraftSpawnPoint");}
+
+    static int getRecordExpirationSeconds(){return cfg.getInt("recordExpirationSeconds");}
 }

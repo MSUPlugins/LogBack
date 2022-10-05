@@ -9,7 +9,7 @@ import java.util.UUID;
 public class DataManager
 {
     // ./plugins/LogBack/data/
-    private static final String DATA_DIR = "." + File.separator + "plugins" + File.separator + LogBack.instance.getName() + File.separator + "data" + File.separator;
+    private static final String DATA_DIR = LogBack.instance.getDataFolder().getPath() + File.separator + "data" + File.separator;
 
     static void writeLocation(Player p, Location l, boolean isSpawnPoint) throws Exception
     {
