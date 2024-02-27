@@ -111,12 +111,14 @@ public final class LogBack extends JavaPlugin implements Listener
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent e)
     {
+        Player p = e.getPlayer();
         if(!cm.get(Boolean.class, "useMinecraftSpawnPoint") && !DataManager.isSpawnSet())
         {
             log.warning(i18n.translate("warn-spawn-not-set"));
+            if(p.hasPermission("logback.setspawn"))
+                p.sendMessage(i18n.translate("warn-spawn-not-set"));
             return;
         }
-        Player p = e.getPlayer();
         Location spawn;
         try
         {
@@ -129,7 +131,8 @@ public final class LogBack extends JavaPlugin implements Listener
         }
         //if(!DataManager.isRecorded(p.getUniqueId())) log.info(p.getName() + " doesn't have a logout location");
         p.teleport(spawn, PlayerTeleportEvent.TeleportCause.PLUGIN);
-        if(cm.get(Boolean.class, "nofityEnabled")) p.sendMessage(i18n.translate("notify"));
+        if(cm.get(Boolean.class, "notify"))
+            p.sendMessage(i18n.translate("notify"));
         if(cm.get(Integer.class, "recordExpirationSeconds") > 0 && DataManager.isRecorded(p.getUniqueId()))
         {
             RecordExpirationTimer t = new RecordExpirationTimer(p.getUniqueId());

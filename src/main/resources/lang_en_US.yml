@@ -11,7 +11,7 @@ err-setspawn-fail: "Failed to set spawn location. Please check the console outpu
 err-write-location-fail: "Failed to save logout location of {0} ({1})"
 err-no-record: "You have no logout location recorded"
 err-read-spawn-fail: "Failed to read spawn location! Using Minecraft default ({0})"
-warn-spawn-not-set: "You haven't set a spawn location! Please use '/logback setspawn'"
+warn-spawn-not-set: "LogBack doesn't have a spawn location recorded. Use '/logback setspawn' to set it, or change the value of 'useMinecraftSpawnPoint' in config.yml to true to use Minecraft's spawn point"
 notify: "Type '/logback' to go back to your logout location"
 setspawn-success: "Set login location to your current location"
 logback-success: "Teleported to logout location"
