@@ -30,7 +30,7 @@ public final class LogBack extends JavaPlugin implements Listener
         instance = this;
         log = getLogger();
         log.info("Initializing");
-        cm = new ConfigManager(this, 1);
+        cm = new ConfigManager(this, 1).initialize();
         i18n = new I18nManager(this).setLanguage(cm.get(String.class, "language"));
 
         getServer().getPluginManager().registerEvents(this, this);

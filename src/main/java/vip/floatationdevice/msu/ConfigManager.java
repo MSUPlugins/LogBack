@@ -43,13 +43,14 @@ public class ConfigManager
      * Initialize the config manager and load "config.yml".
      * Call this function first before calling others.
      */
-    public void initialize()
+    public ConfigManager initialize()
     {
         // check if the config file exists. if not, create one
         if(!f.exists() || !f.isFile() || !f.canRead())
             saveDefaultConfig();
         load();
         initialized = true;
+        return this;
     }
 
     /**
