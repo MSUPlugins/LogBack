@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import static vip.floatationdevice.msu.I18nUtil.translate;
+import static vip.floatationdevice.msu.logback.LogBack.i18n;
 
 public class LBCommandExecutor implements Listener, CommandExecutor
 {
@@ -16,7 +16,7 @@ public class LBCommandExecutor implements Listener, CommandExecutor
     {
         if(!(sender instanceof Player))
         {
-            sender.sendMessage(translate("err-player-only"));
+            sender.sendMessage(i18n.translate("err-player-only"));
             return false;
         }
         switch(args.length)
@@ -30,20 +30,20 @@ public class LBCommandExecutor implements Listener, CommandExecutor
                         if(DataManager.isRecorded(((Player) sender).getUniqueId()))
                         {
                             ((Player) sender).teleport(DataManager.readLocation(((Player) sender).getUniqueId()), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                            sender.sendMessage(translate("logback-success"));
+                            sender.sendMessage(i18n.translate("logback-success"));
                             DataManager.removeLocation(((Player) sender).getUniqueId());
                             return true;
                         }
                         else
                         {
-                            sender.sendMessage(translate("err-no-record"));
+                            sender.sendMessage(i18n.translate("err-no-record"));
                             return false;
                         }
                     }
                     catch(Exception e)
                     {
-                        sender.sendMessage(translate("err-logback-fail"));
-                        LogBack.log.severe(translate("err-logback-fail-console")
+                        sender.sendMessage(i18n.translate("err-logback-fail"));
+                        LogBack.log.severe(i18n.translate("err-logback-fail-console")
                                 .replace("{0}", sender.getName())
                                 .replace("{1}", e.toString()));
                         return false;
@@ -51,7 +51,7 @@ public class LBCommandExecutor implements Listener, CommandExecutor
                 }
                 else
                 {
-                    sender.sendMessage(translate("err-permission-denied"));
+                    sender.sendMessage(i18n.translate("err-permission-denied"));
                     return false;
                 }
             }
@@ -64,26 +64,26 @@ public class LBCommandExecutor implements Listener, CommandExecutor
                         try
                         {
                             DataManager.writeLocation((Player) sender, ((Player) sender).getLocation(), true);
-                            sender.sendMessage(translate("setspawn-success"));
+                            sender.sendMessage(i18n.translate("setspawn-success"));
                             return true;
                         }
                         catch(Exception e)
                         {
-                            sender.sendMessage(translate("err-setspawn-fail"));
+                            sender.sendMessage(i18n.translate("err-setspawn-fail"));
                             e.printStackTrace();
                             return false;
                         }
                     }
                     else
                     {
-                        sender.sendMessage(translate("err-permission-denied"));
+                        sender.sendMessage(i18n.translate("err-permission-denied"));
                         return false;
                     }
                 }
             }
             default:
             {
-                sender.sendMessage(translate("usage"));
+                sender.sendMessage(i18n.translate("usage"));
                 return false;
             }
         }

@@ -6,10 +6,13 @@ import org.bukkit.entity.Player;
 import java.io.*;
 import java.util.UUID;
 
+import static vip.floatationdevice.msu.logback.LogBack.cm;
+import static vip.floatationdevice.msu.logback.LogBack.instance;
+
 public class DataManager
 {
     // ./plugins/LogBack/data/
-    private static final String DATA_DIR = LogBack.instance.getDataFolder().getPath() + File.separator + "data" + File.separator;
+    private static final String DATA_DIR = instance.getDataFolder().getPath() + File.separator + "data" + File.separator;
 
     static void writeLocation(Player p, Location l, boolean isSpawnPoint) throws Exception
     {
@@ -17,12 +20,12 @@ public class DataManager
         new File(new File(filePath).getParent()).mkdirs();
         BufferedWriter bw = new BufferedWriter(new FileWriter(filePath));
         bw.write(
-                l.getWorld().getName() + " "
-                        + l.getX() + " "
-                        + l.getY() + " "
-                        + l.getZ() + " "
-                        + l.getYaw() + " "
-                        + l.getPitch() + "\n"
+                l.getWorld().getName() + ' '
+                        + l.getX() + ' '
+                        + l.getY() + ' '
+                        + l.getZ() + ' '
+                        + l.getYaw() + ' '
+                        + l.getPitch() + '\n'
                         + p.getName()
         );
         bw.flush();
@@ -36,7 +39,7 @@ public class DataManager
         br.close();
         String[] data = line.split(" ");
         return new Location(
-                LogBack.instance.getServer().getWorld(data[0]),
+                instance.getServer().getWorld(data[0]),
                 Double.parseDouble(data[1]),
                 Double.parseDouble(data[2]),
                 Double.parseDouble(data[3]),
@@ -46,9 +49,9 @@ public class DataManager
 
     static Location readSpawnLocation() throws Exception
     {
-        if(ConfigManager.useMinecraftSpawnPoint())
+        if(cm.get(Boolean.class, "useMinecraftSpawnPoint"))
         {
-            return LogBack.instance.getServer().getWorlds().get(0).getSpawnLocation();
+            return instance.getServer().getWorlds().get(0).getSpawnLocation();
         }
         else
         {
@@ -57,7 +60,7 @@ public class DataManager
             br.close();
             String[] data = line.split(" ");
             return new Location(
-                    LogBack.instance.getServer().getWorld(data[0]),
+                    instance.getServer().getWorld(data[0]),
                     Double.parseDouble(data[1]),
                     Double.parseDouble(data[2]),
                     Double.parseDouble(data[3]),
@@ -72,7 +75,10 @@ public class DataManager
             new File(DATA_DIR + u + ".txt").delete();
     }
 
-    static boolean isSpawnSet(){return new File(DATA_DIR + "spawn.txt").exists();}
+    static boolean isSpawnSet()
+    {
+        return new File(DATA_DIR + "spawn.txt").exists();
+    }
 
     static boolean isRecorded(UUID u)
     {

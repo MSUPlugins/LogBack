@@ -8,6 +8,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.UUID;
 
+import static vip.floatationdevice.msu.logback.LogBack.cm;
+
 public class RecordExpirationTimer extends Thread implements Listener
 {
     private final UUID u;
@@ -25,7 +27,7 @@ public class RecordExpirationTimer extends Thread implements Listener
         Bukkit.getServer().getPluginManager().registerEvents(this, LogBack.instance);
         try
         {
-            sleep(ConfigManager.getRecordExpirationSeconds() * 1000L);
+            sleep(cm.get(Integer.class, "recordExpirationSeconds") * 1000L);
             DataManager.removeLocation(u);
             //LogBack.log.info("Logout location " + u + ".txt expired");
         }

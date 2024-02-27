@@ -10,42 +10,36 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import vip.floatationdevice.msu.ConfigManager;
+import vip.floatationdevice.msu.I18nManager;
 
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import static vip.floatationdevice.msu.I18nUtil.setLanguage;
-import static vip.floatationdevice.msu.I18nUtil.translate;
-
 public final class LogBack extends JavaPlugin implements Listener
 {
-    public static LogBack instance;
-    public static Logger log;
-    static Vector<RecordExpirationTimer> expirationTimers = new Vector<RecordExpirationTimer>();
+    static LogBack instance;
+    static Logger log;
+    static ConfigManager cm;
+    static I18nManager i18n;
+    static Vector<RecordExpirationTimer> expirationTimers = new Vector<>();
 
     @Override
     public void onEnable()
     {
+        instance = this;
         log = getLogger();
         log.info("Initializing");
-        instance = this;
+        cm = new ConfigManager(this, 1);
+        i18n = new I18nManager(this).setLanguage(cm.get(String.class, "language"));
+
         getServer().getPluginManager().registerEvents(this, this);
-        try
-        {
-            ConfigManager.initialize();
-            setLanguage(LogBack.class, ConfigManager.getLanguage());
-            this.setEnabled(true);
-            getCommand("logback").setExecutor(new LBCommandExecutor());
-            log.info("Initialization complete");
-        }
-        catch(Exception e)
-        {
-            log.severe("Initialization failed");
-            e.printStackTrace();
-            getServer().getPluginManager().disablePlugin(this);
-        }
-        if(!ConfigManager.useMinecraftSpawnPoint() && !DataManager.isSpawnSet())
-            log.warning(translate("warn-spawn-not-set"));
+        getCommand("logback").setExecutor(new LBCommandExecutor());
+
+        if(!cm.get(Boolean.class, "useMinecraftSpawnPoint") && !DataManager.isSpawnSet())
+            log.warning(i18n.translate("warn-spawn-not-set"));
+
+        log.info("Initialization complete");
     }
 
     @Override
@@ -66,7 +60,7 @@ public final class LogBack extends JavaPlugin implements Listener
             }
             catch(Exception e)
             {
-                log.severe(translate("err-write-location-fail")
+                log.severe(i18n.translate("err-write-location-fail")
                         .replace("{0}", p.getName())
                         .replace("{1}", e.toString()));
             }
@@ -77,9 +71,9 @@ public final class LogBack extends JavaPlugin implements Listener
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerLeave(PlayerQuitEvent e)
     {
-        if(!ConfigManager.useMinecraftSpawnPoint() && !DataManager.isSpawnSet())
+        if(!cm.get(Boolean.class, "useMinecraftSpawnPoint") && !DataManager.isSpawnSet())
         {
-            log.warning(translate("warn-spawn-not-set"));
+            log.warning(i18n.translate("warn-spawn-not-set"));
             return;
         }
         Player p = e.getPlayer();
@@ -92,7 +86,7 @@ public final class LogBack extends JavaPlugin implements Listener
         catch(Exception ex)
         {
             spawn = getServer().getWorlds().get(0).getSpawnLocation();
-            log.severe(translate("err-read-spawn-fail").replace("{0}", ex.toString()));
+            log.severe(i18n.translate("err-read-spawn-fail").replace("{0}", ex.toString()));
         }
         Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable()
         {
@@ -105,7 +99,7 @@ public final class LogBack extends JavaPlugin implements Listener
                 }
                 catch(Exception ex)
                 {
-                    log.severe(translate("err-write-location-fail")
+                    log.severe(i18n.translate("err-write-location-fail")
                             .replace("{0}", p.getName())
                             .replace("{1}", ex.toString()));
                 }
@@ -117,9 +111,9 @@ public final class LogBack extends JavaPlugin implements Listener
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent e)
     {
-        if(!ConfigManager.useMinecraftSpawnPoint() && !DataManager.isSpawnSet())
+        if(!cm.get(Boolean.class, "useMinecraftSpawnPoint") && !DataManager.isSpawnSet())
         {
-            log.warning(translate("warn-spawn-not-set"));
+            log.warning(i18n.translate("warn-spawn-not-set"));
             return;
         }
         Player p = e.getPlayer();
@@ -131,12 +125,12 @@ public final class LogBack extends JavaPlugin implements Listener
         catch(Exception ex)
         {
             spawn = getServer().getWorlds().get(0).getSpawnLocation();
-            log.severe(translate("err-read-spawn-fail").replace("{0}", e.toString()));
+            log.severe(i18n.translate("err-read-spawn-fail").replace("{0}", e.toString()));
         }
         //if(!DataManager.isRecorded(p.getUniqueId())) log.info(p.getName() + " doesn't have a logout location");
         p.teleport(spawn, PlayerTeleportEvent.TeleportCause.PLUGIN);
-        if(ConfigManager.nofityEnabled()) p.sendMessage(translate("notify"));
-        if(ConfigManager.getRecordExpirationSeconds() > 0 && DataManager.isRecorded(p.getUniqueId()))
+        if(cm.get(Boolean.class, "nofityEnabled")) p.sendMessage(i18n.translate("notify"));
+        if(cm.get(Integer.class, "recordExpirationSeconds") > 0 && DataManager.isRecorded(p.getUniqueId()))
         {
             RecordExpirationTimer t = new RecordExpirationTimer(p.getUniqueId());
             expirationTimers.add(t);
