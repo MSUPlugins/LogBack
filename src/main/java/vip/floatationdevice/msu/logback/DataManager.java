@@ -19,14 +19,13 @@ public class DataManager
         String filePath = DATA_DIR + (isSpawnPoint ? "spawn" : p.getUniqueId()) + ".txt";
         new File(new File(filePath).getParent()).mkdirs();
         BufferedWriter bw = new BufferedWriter(new FileWriter(filePath));
-        bw.write(
-                l.getWorld().getName() + ' '
-                        + l.getX() + ' '
-                        + l.getY() + ' '
-                        + l.getZ() + ' '
-                        + l.getYaw() + ' '
-                        + l.getPitch() + '\n'
-                        + p.getName()
+        bw.write(l.getWorld().getName() + ' '
+                + l.getX() + ' '
+                + l.getY() + ' '
+                + l.getZ() + ' '
+                + l.getYaw() + ' '
+                + l.getPitch() + '\n'
+                + p.getName()
         );
         bw.flush();
         bw.close();
@@ -34,7 +33,7 @@ public class DataManager
 
     static Location readLocation(UUID u) throws Exception
     {
-        BufferedReader br = new BufferedReader(new FileReader(DATA_DIR + u + ".txt"));
+        BufferedReader br = new BufferedReader(new FileReader(DATA_DIR + (u == null ? "spawn" : u) + ".txt"));
         String line = br.readLine();
         br.close();
         String[] data = line.split(" ");
@@ -50,23 +49,9 @@ public class DataManager
     static Location readSpawnLocation() throws Exception
     {
         if(cm.get(Boolean.class, "useMinecraftSpawnPoint"))
-        {
             return instance.getServer().getWorlds().get(0).getSpawnLocation();
-        }
         else
-        {
-            BufferedReader br = new BufferedReader(new FileReader(DATA_DIR + "spawn.txt"));
-            String line = br.readLine();
-            br.close();
-            String[] data = line.split(" ");
-            return new Location(
-                    instance.getServer().getWorld(data[0]),
-                    Double.parseDouble(data[1]),
-                    Double.parseDouble(data[2]),
-                    Double.parseDouble(data[3]),
-                    Float.parseFloat(data[4]),
-                    Float.parseFloat(data[5]));
-        }
+            return readLocation(null);
     }
 
     static void removeLocation(UUID u)

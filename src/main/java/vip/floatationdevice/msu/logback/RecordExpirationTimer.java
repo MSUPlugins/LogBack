@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.UUID;
 
-import static vip.floatationdevice.msu.logback.LogBack.cm;
+import static vip.floatationdevice.msu.logback.LogBack.*;
 
 public class RecordExpirationTimer extends Thread implements Listener
 {
@@ -23,20 +23,20 @@ public class RecordExpirationTimer extends Thread implements Listener
     @Override
     public void run()
     {
-        //LogBack.log.info("Started expiration timer for " + u + ".txt");
-        Bukkit.getServer().getPluginManager().registerEvents(this, LogBack.instance);
+        log.info("Started expiration timer for " + u + ".txt");
+        Bukkit.getServer().getPluginManager().registerEvents(this, instance);
         try
         {
             sleep(cm.get(Integer.class, "recordExpirationSeconds") * 1000L);
             DataManager.removeLocation(u);
-            //LogBack.log.info("Logout location " + u + ".txt expired");
+            log.info("Logout location " + u + ".txt expired");
         }
         catch(InterruptedException e)
         {
-            //LogBack.log.info("Cancelled expiration for " + u + ".txt");
+            log.info("Cancelled expiration for " + u + ".txt");
         }
         PlayerQuitEvent.getHandlerList().unregister(this);
-        LogBack.expirationTimers.remove(this);
+        expirationTimers.remove(this);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -44,7 +44,7 @@ public class RecordExpirationTimer extends Thread implements Listener
     {
         if(event.getPlayer().getUniqueId().equals(u))
         {
-            //LogBack.log.info("Player quit, cancel expiration");
+            log.info("Player quit, cancel expiration");
             interrupt();
         }
     }

@@ -1,14 +1,8 @@
 package vip.floatationdevice.msu.logback;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import vip.floatationdevice.msu.ConfigManager;
 import vip.floatationdevice.msu.I18nManager;
@@ -29,25 +23,36 @@ public final class LogBack extends JavaPlugin implements Listener
     {
         instance = this;
         log = getLogger();
-        log.info("Initializing");
         cm = new ConfigManager(this, 1).initialize();
         i18n = new I18nManager(this).setLanguage(cm.get(String.class, "language"));
 
-        getServer().getPluginManager().registerEvents(this, this);
+        getServer().getPluginManager().registerEvents(new LBEventListener(), this);
         getCommand("logback").setExecutor(new LBCommandExecutor());
 
         if(!cm.get(Boolean.class, "useMinecraftSpawnPoint") && !DataManager.isSpawnSet())
             log.warning(i18n.translate("warn-spawn-not-set"));
 
-        log.info("Initialization complete");
+        log.info("LogBack loaded");
     }
 
     @Override
     public void onDisable()
     {
+        log.info("LogBack is being disabled");
+
         // cancel all expiration timers
-        for(RecordExpirationTimer t : expirationTimers) t.interrupt();
-        // save all players' location
+        for(RecordExpirationTimer t : expirationTimers)
+            t.interrupt();
+
+        /*
+         * FIXME: saving all players' location on server shutdown doesn't work as expected
+         *  Excerpted from: https://www.spigotmc.org/threads/is-playerquitevent-called-when-stop-is-used.269901/
+         *   "Server disables plugins before disconnecting the players, and so, the event listener does not get the
+         *   event, even if it would be fired."
+         *  The facts are like: the server first unregisters the plugin's event listener, then kicks everyone, and
+         *   finally calls onDisable(). This happens to cause the result of getOnlinePlayers() to be always empty when
+         *   the server is being shut down.
+         */
         log.info("Saving all players' location");
         int count = 0;
         for(Player p : getServer().getOnlinePlayers())
@@ -66,78 +71,5 @@ public final class LogBack extends JavaPlugin implements Listener
             }
         }
         log.info("Saving complete, " + count + " players' location saved");
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerLeave(PlayerQuitEvent e)
-    {
-        if(!cm.get(Boolean.class, "useMinecraftSpawnPoint") && !DataManager.isSpawnSet())
-        {
-            log.warning(i18n.translate("warn-spawn-not-set"));
-            return;
-        }
-        Player p = e.getPlayer();
-        Location loc = p.getLocation();
-        Location spawn;
-        try
-        {
-            spawn = DataManager.readSpawnLocation();
-        }
-        catch(Exception ex)
-        {
-            spawn = getServer().getWorlds().get(0).getSpawnLocation();
-            log.severe(i18n.translate("err-read-spawn-fail").replace("{0}", ex.toString()));
-        }
-        Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    DataManager.writeLocation(p, loc, false);
-                }
-                catch(Exception ex)
-                {
-                    log.severe(i18n.translate("err-write-location-fail")
-                            .replace("{0}", p.getName())
-                            .replace("{1}", ex.toString()));
-                }
-            }
-        });
-        p.teleport(spawn, PlayerTeleportEvent.TeleportCause.PLUGIN);
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerJoin(PlayerJoinEvent e)
-    {
-        Player p = e.getPlayer();
-        if(!cm.get(Boolean.class, "useMinecraftSpawnPoint") && !DataManager.isSpawnSet())
-        {
-            log.warning(i18n.translate("warn-spawn-not-set"));
-            if(p.hasPermission("logback.setspawn"))
-                p.sendMessage(i18n.translate("warn-spawn-not-set"));
-            return;
-        }
-        Location spawn;
-        try
-        {
-            spawn = DataManager.readSpawnLocation();
-        }
-        catch(Exception ex)
-        {
-            spawn = getServer().getWorlds().get(0).getSpawnLocation();
-            log.severe(i18n.translate("err-read-spawn-fail").replace("{0}", e.toString()));
-        }
-        //if(!DataManager.isRecorded(p.getUniqueId())) log.info(p.getName() + " doesn't have a logout location");
-        p.teleport(spawn, PlayerTeleportEvent.TeleportCause.PLUGIN);
-        if(cm.get(Boolean.class, "notify"))
-            p.sendMessage(i18n.translate("notify"));
-        if(cm.get(Integer.class, "recordExpirationSeconds") > 0 && DataManager.isRecorded(p.getUniqueId()))
-        {
-            RecordExpirationTimer t = new RecordExpirationTimer(p.getUniqueId());
-            expirationTimers.add(t);
-            t.start();
-        }
     }
 }

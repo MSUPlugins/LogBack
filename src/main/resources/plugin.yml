@@ -4,6 +4,8 @@ main: vip.floatationdevice.msu.logback.LogBack
 api-version: 1.13
 authors: [ MCUmbrella ]
 website: https://github.com/MSUPugins/LogBack
+depend:
+  - MSUCore
 commands:
   logback:
     description: "Teleport to logout location"

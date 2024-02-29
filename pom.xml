@@ -6,7 +6,7 @@
 
     <groupId>vip.floatationdevice.msu</groupId>
     <artifactId>logback</artifactId>
-    <version>1.0.2</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
 
     <name>LogBack</name>
@@ -64,6 +64,12 @@
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
             <version>1.13.2-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>vip.floatationdevice.msu</groupId>
+            <artifactId>msucore</artifactId>
+            <version>1.0.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
