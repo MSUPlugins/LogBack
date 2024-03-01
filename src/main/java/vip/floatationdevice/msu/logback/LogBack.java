@@ -15,6 +15,7 @@ public final class LogBack extends JavaPlugin
     static Logger log;
     static ConfigManager cm;
     static I18nManager i18n;
+    static DataManager dm;
     static Vector<RecordExpirationTimer> expirationTimers;
 
     @Override
@@ -24,12 +25,13 @@ public final class LogBack extends JavaPlugin
         log = getLogger();
         cm = new ConfigManager(this, 1).initialize();
         i18n = new I18nManager(this).setLanguage(cm.get(String.class, "language"));
+        dm = new DataManager(this);
         expirationTimers = new Vector<>();
 
         getServer().getPluginManager().registerEvents(new LBEventListener(), this);
         getCommand("logback").setExecutor(new LBCommandExecutor());
 
-        if(!cm.get(Boolean.class, "useMinecraftSpawnPoint") && !DataManager.isSpawnSet())
+        if(!cm.get(Boolean.class, "useMinecraftSpawnPoint") && !dm.isSpawnSet())
             log.warning(i18n.translate("warn-spawn-not-set"));
 
         log.info("LogBack loaded");
@@ -60,7 +62,7 @@ public final class LogBack extends JavaPlugin
             Location loc = p.getLocation();
             try
             {
-                DataManager.writeLocation(p, loc, false);
+                dm.writeLocation(p, loc, false);
                 count++;
             }
             catch(Exception e)

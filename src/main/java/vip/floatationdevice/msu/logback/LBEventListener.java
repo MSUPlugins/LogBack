@@ -21,7 +21,7 @@ public class LBEventListener implements Listener
     public void onPlayerLeave(PlayerQuitEvent e)
     {
         // spawn point hasn't been set, LogBack will not work
-        if(!cm.get(Boolean.class, "useMinecraftSpawnPoint") && !DataManager.isSpawnSet())
+        if(!cm.get(Boolean.class, "useMinecraftSpawnPoint") && !dm.isSpawnSet())
         {
             log.warning(i18n.translate("warn-spawn-not-set"));
             return;
@@ -33,7 +33,7 @@ public class LBEventListener implements Listener
         Location spawn;
         try
         {
-            spawn = DataManager.readSpawnLocation();
+            spawn = dm.readSpawnLocation();
         }
         catch(Exception ex)
         {
@@ -50,7 +50,7 @@ public class LBEventListener implements Listener
             {
                 try
                 {
-                    DataManager.writeLocation(p, loc, false);
+                    dm.writeLocation(p, loc, false);
                 }
                 catch(Exception ex)
                 {
@@ -73,7 +73,7 @@ public class LBEventListener implements Listener
     {
         Player p = e.getPlayer();
         // spawn point hasn't been set, LogBack will not work
-        if(!cm.get(Boolean.class, "useMinecraftSpawnPoint") && !DataManager.isSpawnSet())
+        if(!cm.get(Boolean.class, "useMinecraftSpawnPoint") && !dm.isSpawnSet())
         {
             log.warning(i18n.translate("warn-spawn-not-set"));
             if(p.hasPermission("logback.setspawn"))
@@ -82,7 +82,7 @@ public class LBEventListener implements Listener
         }
 
         // check if the player has logout location recorded
-        if(DataManager.isRecorded(p.getUniqueId()))
+        if(dm.isRecorded(p.getUniqueId()))
         {
             // should notify the player about /logback or not
             if(cm.get(Boolean.class, "notify"))
@@ -104,7 +104,7 @@ public class LBEventListener implements Listener
             Location spawn;
             try
             {
-                spawn = DataManager.readSpawnLocation();
+                spawn = dm.readSpawnLocation();
             }
             catch(Exception ex)
             {

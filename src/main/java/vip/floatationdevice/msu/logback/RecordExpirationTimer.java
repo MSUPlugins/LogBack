@@ -28,7 +28,7 @@ public class RecordExpirationTimer extends Thread implements Listener
         try
         {
             sleep(cm.get(Integer.class, "recordExpirationSeconds") * 1000L);
-            DataManager.removeLocation(u);
+            dm.removeLocation(u);
 //            log.info("Logout location " + u + ".txt expired");
         }
         catch(InterruptedException e)

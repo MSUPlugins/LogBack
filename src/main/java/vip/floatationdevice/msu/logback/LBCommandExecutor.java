@@ -34,11 +34,11 @@ public class LBCommandExecutor implements CommandExecutor
 
             try
             {
-                if(DataManager.isRecorded(p.getUniqueId()))
+                if(dm.isRecorded(p.getUniqueId()))
                 {
-                    p.teleport(DataManager.readLocation(p.getUniqueId()), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                    p.teleport(dm.readLocation(p.getUniqueId()), PlayerTeleportEvent.TeleportCause.PLUGIN);
                     p.sendMessage(i18n.translate("logback-success"));
-                    DataManager.removeLocation(p.getUniqueId());
+                    dm.removeLocation(p.getUniqueId());
                     for(RecordExpirationTimer t : expirationTimers)
                         if(t.u == p.getUniqueId())
                         {
@@ -73,7 +73,7 @@ public class LBCommandExecutor implements CommandExecutor
 
             try
             {
-                DataManager.writeLocation(p, p.getLocation(), true);
+                dm.writeLocation(p, p.getLocation(), true);
                 p.sendMessage(i18n.translate("setspawn-success"));
             }
             catch(Exception e)
