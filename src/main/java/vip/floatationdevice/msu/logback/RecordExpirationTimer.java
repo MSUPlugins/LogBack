@@ -23,17 +23,17 @@ public class RecordExpirationTimer extends Thread implements Listener
     @Override
     public void run()
     {
-        log.info("Started expiration timer for " + u + ".txt");
+//        log.info("Started expiration timer for " + u + ".txt");
         Bukkit.getServer().getPluginManager().registerEvents(this, instance);
         try
         {
             sleep(cm.get(Integer.class, "recordExpirationSeconds") * 1000L);
             DataManager.removeLocation(u);
-            log.info("Logout location " + u + ".txt expired");
+//            log.info("Logout location " + u + ".txt expired");
         }
         catch(InterruptedException e)
         {
-            log.info("Cancelled expiration for " + u + ".txt");
+//            log.info("Cancelled expiration for " + u + ".txt");
         }
         PlayerQuitEvent.getHandlerList().unregister(this);
         expirationTimers.remove(this);
@@ -44,7 +44,7 @@ public class RecordExpirationTimer extends Thread implements Listener
     {
         if(event.getPlayer().getUniqueId().equals(u))
         {
-            log.info("Player quit, cancel expiration");
+//            log.info("Player quit, cancel expiration");
             interrupt();
         }
     }

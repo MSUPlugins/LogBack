@@ -99,7 +99,7 @@ public class LBEventListener implements Listener
         else
         {
             // doesn't have logout location. maybe new player or plugin's bug
-            log.info(p.getName() + " doesn't have a logout location");
+//            log.info(p.getName() + " doesn't have a logout location");
             // teleport to spawn
             Location spawn;
             try
