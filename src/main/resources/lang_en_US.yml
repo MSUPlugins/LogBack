@@ -2,7 +2,12 @@ language: "English (US)"
 language-file-version: 1
 language-file-contributor: "MCUmbrella"
 
-usage: "Usage: \n  /logback : teleport to logout location\n  /logback setspawn : set the login location"
+usage: |-2
+  Usage:
+    /logback:
+      Teleport to logout location
+    /logback setspawn:
+      Set the login location
 err-permission-denied: "You don't have permission to do that"
 err-player-only: "This command is only available to players"
 err-logback-fail: "Failed to teleport you to logout location. Please contact your server administrator"

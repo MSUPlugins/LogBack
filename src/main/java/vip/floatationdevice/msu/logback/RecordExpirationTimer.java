@@ -12,7 +12,7 @@ import static vip.floatationdevice.msu.logback.LogBack.*;
 
 public class RecordExpirationTimer extends Thread implements Listener
 {
-    private final UUID u;
+    final UUID u;
 
     public RecordExpirationTimer(UUID u)
     {

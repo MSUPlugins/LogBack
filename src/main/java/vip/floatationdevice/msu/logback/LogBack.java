@@ -2,7 +2,6 @@ package vip.floatationdevice.msu.logback;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import vip.floatationdevice.msu.ConfigManager;
 import vip.floatationdevice.msu.I18nManager;
@@ -10,13 +9,13 @@ import vip.floatationdevice.msu.I18nManager;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-public final class LogBack extends JavaPlugin implements Listener
+public final class LogBack extends JavaPlugin
 {
     static LogBack instance;
     static Logger log;
     static ConfigManager cm;
     static I18nManager i18n;
-    static Vector<RecordExpirationTimer> expirationTimers = new Vector<>();
+    static Vector<RecordExpirationTimer> expirationTimers;
 
     @Override
     public void onEnable()
@@ -25,6 +24,7 @@ public final class LogBack extends JavaPlugin implements Listener
         log = getLogger();
         cm = new ConfigManager(this, 1).initialize();
         i18n = new I18nManager(this).setLanguage(cm.get(String.class, "language"));
+        expirationTimers = new Vector<>();
 
         getServer().getPluginManager().registerEvents(new LBEventListener(), this);
         getCommand("logback").setExecutor(new LBCommandExecutor());

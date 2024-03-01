@@ -4,13 +4,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import static vip.floatationdevice.msu.logback.LogBack.i18n;
-import static vip.floatationdevice.msu.logback.LogBack.log;
+import static vip.floatationdevice.msu.logback.LogBack.*;
 
-public class LBCommandExecutor implements Listener, CommandExecutor
+public class LBCommandExecutor implements CommandExecutor
 {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
@@ -41,6 +39,12 @@ public class LBCommandExecutor implements Listener, CommandExecutor
                     p.teleport(DataManager.readLocation(p.getUniqueId()), PlayerTeleportEvent.TeleportCause.PLUGIN);
                     p.sendMessage(i18n.translate("logback-success"));
                     DataManager.removeLocation(p.getUniqueId());
+                    for(RecordExpirationTimer t : expirationTimers)
+                        if(t.u == p.getUniqueId())
+                        {
+                            t.interrupt();
+                            break;
+                        }
                 }
                 else
                 {
