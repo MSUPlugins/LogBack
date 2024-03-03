@@ -9,6 +9,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.world.SpawnChangeEvent;
+
+import java.lang.reflect.Field;
 
 import static vip.floatationdevice.msu.logback.LogBack.*;
 
@@ -112,6 +115,31 @@ public class LBEventListener implements Listener
                 log.severe(i18n.translate("err-read-spawn-fail").replace("{0}", e.toString()));
             }
             p.teleport(spawn, PlayerTeleportEvent.TeleportCause.PLUGIN);
+        }
+    }
+
+    /*
+     * FIXME: SpawnChangeEvent not fired on /setworldspawn, find alternatives
+     *  Looks like a bug of Bukkit
+     */
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onMinecraftSpawnChanged(SpawnChangeEvent e)
+    {
+        if(!cm.get(Boolean.class, "useMinecraftSpawnPoint") || e.getWorld() != instance.getServer().getWorlds().get(0))
+            return;
+
+        try
+        {
+            log.info("Syncing spawn point");
+            Field f = dm.getClass().getField("cachedSpawnLocation");
+            f.setAccessible(true);
+            f.set(dm, null);
+            dm.readSpawnLocation();
+        }
+        catch(Exception ex)
+        {
+            log.severe("Failed to sync spawn point: " + ex);
+            ex.printStackTrace();
         }
     }
 }

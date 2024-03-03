@@ -1,9 +1,10 @@
 name: LogBack
 version: '${project.version}'
+description: Login at a fixed location, manually teleport back to the logout location
 main: vip.floatationdevice.msu.logback.LogBack
-api-version: 1.13
 authors: [ MCUmbrella ]
-website: https://github.com/MSUPugins/LogBack
+website: https://github.com/MSUPlugins/LogBack
+api-version: 1.13
 depend:
   - MSUCore
 commands:
