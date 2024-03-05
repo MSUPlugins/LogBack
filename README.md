@@ -6,4 +6,4 @@ Login at a fixed location, manually teleport back to the logout location
 - `/logback setspawn`: Set the login location
   - Permission: `logback.setspawn` (auto-granted to admins)
 ## Config:
-- See [config.yml](https://github.com/MSUPugins/LogBack/blob/main/src/main/resources/config.yml) - each configuration item is explained there
+- See [config.yml](https://github.com/MSUPlugins/LogBack/blob/main/src/main/resources/config.yml) - each configuration item is explained there
